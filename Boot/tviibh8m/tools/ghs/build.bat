@@ -1,0 +1,1 @@
+start cmd /c "echo Building veHSM & cd %~dp0..\..\..\..\..\Microsar\veHSM\BuildSystem & j.bat -j6 > veHsm_Build.log & COPY /B ..\..\..\Applications\Boot\application\Framework\Boot\AppMetaData_cm0plus.c+,,..\..\..\Applications\Boot\application\Framework\Boot\AppMetaData_cm0plus.c"

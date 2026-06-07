@@ -1,0 +1,7 @@
+#!gbuild
+
+macro ME=$(APPLICATION_REL_PATH)
+macro CPU_FULL_NAME=$(CPU_NAME)$(CPU_INSTANCE_SUFFIX)
+
+[Subproject]
+$(ME)\Framework\Framework.gpj
