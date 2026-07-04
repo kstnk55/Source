@@ -1,6 +1,0 @@
-#!gbuild
-
-[Project]
-debugging\tvii_debug.py
-debugging\$(DIE).con
-debugging\$(DIE).ghpcfg

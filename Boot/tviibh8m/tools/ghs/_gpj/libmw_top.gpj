@@ -1,9 +1,0 @@
-#!gbuild
-
-macro BUILD_TARGET=libmw.gpj
-
-[Subproject]
-
-cm0plus.gpj
-cm7_x.gpj
-

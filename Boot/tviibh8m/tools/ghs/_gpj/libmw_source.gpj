@@ -1,7 +1,0 @@
-#!gbuild
-
-[Subproject]
-
-$(SERIES_FOLDER_REL_PATH)\src\mw\power\cy_power.c
-$(SERIES_FOLDER_REL_PATH)\src\mw\power\cy_power.h
-

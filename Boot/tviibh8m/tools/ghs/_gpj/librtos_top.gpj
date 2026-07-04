@@ -1,8 +1,0 @@
-#!gbuild
-
-macro BUILD_TARGET=librtos.gpj
-
-[Subproject]
-
-cm7_x.gpj
-

@@ -1,9 +1,0 @@
-#!gbuild
-
-macro BUILD_TARGET=libsdl.gpj
-
-[Subproject]
-
-cm0plus.gpj
-cm7_x.gpj
-

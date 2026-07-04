@@ -1,7 +1,0 @@
-#!gbuild
-
-macro PARENT=$(ME)
-macro ME=$(PARENT)\Framework
-
-[Subproject]
-$(ME)\Boot\Boot.gpj
