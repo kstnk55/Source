@@ -1,0 +1,9 @@
+#!gbuild
+
+macro ME=$(PARENT)\Boot
+macro PARENT=$(ME)
+[Subproject]
+DualBank_Manager_FblTransition.c
+{streq(CPU_FULL_NAME, "cm0plus")} $(ME)\SFlash\SFlash.gpj
+$(ME)\AppMetaData_$(CPU_NAME).c
+	{streq(CPU_NAME, "cm0plus")} :postexec=$(ME)\..\..\..\tviibh8m\tools\ghs\build.bat

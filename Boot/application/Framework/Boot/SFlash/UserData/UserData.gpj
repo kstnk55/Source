@@ -1,0 +1,9 @@
+#!gbuild
+
+macro PARENT=$(ME)
+macro ME=$(PARENT)\UserData
+
+[Subproject]
+$(ME)\UserMetaData.c
+$(ME)\DualBank_Manager.asm
+$(ME)\DualBank_ManagerCallback.c

@@ -1,0 +1,9 @@
+    -I$(APPLICATION_REL_PATH)\Framework
+    -I$(APPLICATION_REL_PATH)\Framework\Boot
+    -I$(APPLICATION_REL_PATH)\Framework\Boot\SFlash
+    -I$(APPLICATION_REL_PATH)\Framework\Boot\SFlash\UserData
+
+    -D_0WK_BOARD
+    -DFLASH_BOOT_BUILD
+#    -DCPU_BOARD_REV4
+#	 -DEVAL_BOARD
