@@ -1,0 +1,45 @@
+
+# Overwrite project name
+PROJECT_NAME=26CDC_veHSM
+BRS_PROJECT_NAME=26CDC_veHSM
+
+# Disable updater
+VHSMUPD_USED                   = 0
+VHSMUPD_CORE_USED              = 0
+VHSMUPD_EXT_VECTOR_USED        = 0
+VHSMUPD_PLATFORM_RH850_USED    = 0
+VHSMUPD_PLATFORM_MPC57XX_USED  = 0
+VHSMUPD_PLATFORM_TRAVEO2_USED  = 0
+VHSMUPD_PLATFORM_TC2XX_USED    = 0
+VHSMUPD_PLATFORM_TC3XX_USED    = 0
+VHSMUPD_PLATFORM_GENERIC_USED  = 0
+VHSMUPD_PLATFORM_USED          = 0
+
+# Workaround for ESCAN00104600
+VHSM_CUSTOM_GENERIC_USED       = 0
+ADDITIONAL_INCLUDES           += $(ROOT)\BSW\vHsm_Custom
+ADDITIONAL_INCLUDES           += $(ROOT)\Components\vHsm_Custom\Implementation
+
+# Disable Arti
+MONITORING_ARTI_USED           = 0
+
+# Add Custom driver
+APP_SOURCE_LST                += ..\Project\Appl\Source\vHsm_Custom.c
+
+# Disable Os
+-include Makefile.project.part.defines.vHsm.DisableOs
+
+# Platform specific configuration
+-include Makefile.project.part.defines.vHsm.Platform
+
+# Compiler specific configuration
+-include Makefile.project.part.defines.vHsm.Compiler
+
+# Tier1 specific custom drivers
+-include Makefile.project.part.defines.vHsm.CustomTier1
+
+# OEM specific configuration
+-include Makefile.project.part.defines.vHsm.OEM
+
+# Updater specific configuration
+-include Makefile.project.part.defines.vHsm.Updater

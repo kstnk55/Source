@@ -1,0 +1,21 @@
+
+#Add files for the HSMPerfLib (provided by hardware supplier)
+PERFLIB_PATH		       = SW-TVII-HSM-Perf-Lib_V1.1.1
+
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\UserEnv\Common
+#APP_SOURCE_LST        += $(PERFLIB_PATH)\source\UserEnv\Common\*.c
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\UserEnv\Hsm
+APP_SOURCE_LST        += $(PERFLIB_PATH)\source\UserEnv\Hsm\*.c
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\common\config
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\common\include
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\common\src
+APP_SOURCE_LST        += $(PERFLIB_PATH)\source\HSMPerfLib\common\src\*.c
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmCrpt\config
+APP_SOURCE_LST        += $(PERFLIB_PATH)\source\HSMPerfLib\HsmCrpt\config\*.c
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmCrpt\include
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmCrpt\src
+APP_SOURCE_LST        += $(PERFLIB_PATH)\source\HSMPerfLib\HsmCrpt\src\*.c
+
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmIpc\config
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmIpc\include
+ADDITIONAL_INCLUDES   += $(PERFLIB_PATH)\source\HSMPerfLib\HsmIpc\src

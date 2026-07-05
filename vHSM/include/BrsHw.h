@@ -1,0 +1,251 @@
+/**
+* @file  BrsHw.h
+* @brief  Public header for BrsHw
+* @details Hardware abstraction for Cypress Traveo2 in Vector BRS. This module provides a hardware-specific interface for the Vector Basic Runtime System (BRS) and is intended to be used without modification.
+*/
+/**********************************************************************************************************************
+ *  COPYRIGHT
+ *  -------------------------------------------------------------------------------------------------------------------
+ *  \verbatim
+ *  Copyright (c) 2023 by Vector Informatik GmbH.                                                  All rights reserved.
+ *
+ *                This software is copyright protected and proprietary to Vector Informatik GmbH.
+ *                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+ *                All other rights remain with Vector Informatik GmbH.
+ *  \endverbatim
+ *  -------------------------------------------------------------------------------------------------------------------
+ *  FILE DESCRIPTION
+ *  -----------------------------------------------------------------------------------------------------------------*/
+/** \file  File:  BrsHw.h
+ *      Project:  Vector Basic Runtime System
+ *       Module:  BrsHw of HSM Core for platform Cypress Traveo2
+ *
+ *  \brief Description:  This is the hardware specific header file for Vector Basic Runtime System (BRS).
+ *
+ *  \attention Please note:
+ *    The demo and example programs only show special aspects of the software. With regard to the fact
+ *    that these programs are meant for demonstration purposes only, Vector Informatik liability shall be
+ *    expressly excluded in cases of ordinary negligence, to the extent admissible by law or statute.
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  REVISION HISTORY
+ *  -------------------------------------------------------------------------------------------------------------------
+ *  Version   Date        Author  Description
+ *  --------  ----------  ------  -------------------------------------------------------------------------------------
+ *  01.00.00  2020-05-26  visbpz  New branch for vBaseEnv 2.0, based on zBrs_Traveo2 BrsHw.c 1.00.00
+ *  01.01.00  2020-10-19  visbwa  Update to Brs_Template 1.01.01, removed AUTHOR IDENTITY
+ *  01.02.00  2020-12-04  visbwa  Added support for GccGnu compiler
+ *  02.00.00  2021-12-07  vismaa  Update to Brs_Template 1.03.01
+ *  02.00.01  2022-08-12  visbwa  Update to Brs_Template 1.03.05; UsageType=external in ALM (DemoComponents concept)
+ *  02.00.02  2023-01-11  vismaa  Added BRSHW_INIT_CORE_ID define
+ *********************************************************************************************************************/
+
+#ifndef _BRSHW_H_
+#define _BRSHW_H_
+
+/**********************************************************************************************************************
+ *  MODULE VERSION
+ *********************************************************************************************************************/
+
+/**
+ * @def      BRSHW_SOURCECODE_TEMPLATE_VERSION
+ * @value    0x0103u
+ * @resolution -
+ * @brief    The main version of the BrsHw source code template used for this file. The version is BCD coded (e.g., 1.03 is 0x0103u).
+ */
+#define BRSHW_SOURCECODE_TEMPLATE_VERSION        0x0103u
+
+/**
+ * @def      BRSHW_SOURCECODE_TEMPLATE_BUGFIX_VERSION
+ * @value    0x05u
+ * @resolution -
+ * @brief    The bugfix version of the BrsHw source code template. The version is BCD coded.
+ */
+#define BRSHW_SOURCECODE_TEMPLATE_BUGFIX_VERSION 0x05u
+
+/**
+ * @def      BRSHW_VERSION
+ * @value    0x0200u
+ * @resolution -
+ * @brief    The main version of the BrsHw module implementation. The version is BCD coded (e.g., 2.00 is 0x0200u).
+ */
+#define BRSHW_VERSION        0x0200u
+
+/**
+ * @def      BRSHW_BUGFIX_VERSION
+ * @value    0x01u
+ * @resolution -
+ * @brief    The bugfix version of the BrsHw module implementation. The version is BCD coded.
+ */
+#define BRSHW_BUGFIX_VERSION 0x01u
+
+/**********************************************************************************************************************
+ *  INCLUDES
+ *********************************************************************************************************************/
+/*
+ * Description: Inclusion of generic ARM parts
+ */
+#include "ARMBrsHw_CortexM.h"
+
+/**********************************************************************************************************************
+ *  CONFIGURATION CHECK
+ *********************************************************************************************************************/
+/* The following parameters are necessary for this platform, to be generated by BRS-Cfg5-Generator into BrsCfg.h */
+#if !defined (BRS_OSC_CLK)
+  #error "BRS CHECK: The parameter BRS_OSC_CLK is missing! Please check your BRS Cfg5 configuration."
+#endif
+
+#if !defined (BRS_TIMEBASE_CLOCK)
+  #error "BRS CHECK: The parameter BRS_TIMEBASE_CLOCK is missing! Please check your BRS Cfg5 configuration."
+#endif
+
+#if !defined (BRS_PERIPH_CLOCK)
+  #error "BRS CHECK: The parameter BRS_PERIPH_CLOCK is missing! Please check your BRS Cfg5 configuration."
+#endif
+
+#if !defined (BRS_CPU_MAX_FREQUENCY)
+  #error "BRS CHECK: The parameter BRS_CPU_MAX_FREQUENCY is missing! Please check your BRS Cfg5 configuration."
+#endif
+
+#if !defined (BRS_CPU_CORE_CORTEX_M0PLUS)
+  #error "BRS CHECK: The parameter BRS_CPU_CORE_x is missing or not supported! Please check your BRS Cfg5 configuration."
+#endif
+
+#if !defined (BRS_CPU_CORE_AMOUNT)
+  #error "BRS CHECK: The parameter BRS_CPU_CORE_AMOUNT is missing! Please check your BRS Cfg5 configuration."
+#endif
+
+/**********************************************************************************************************************
+ *  GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
+/**
+ * @def      BRSHW_INIT_CORE_ID
+ * @value    0
+ * @resolution -
+ * @brief    Defines the core ID responsible for hardware initialization. It is always 0 for the single-core HSM implementation, as BrsHw_GetCore() always returns 0.
+ */
+#define BRSHW_INIT_CORE_ID 0
+
+/**
+ * @def      BRS_READ_COREID(c)
+ * @value    __as1(MOVS c, 0x0)
+ * @resolution -
+ * @brief    Reads the current core ID. For the single-core implementation, it always returns 0.
+ */
+#define BRS_READ_COREID(c) __as1(MOVS c, 0x0)
+
+/**********************************************************************************************************************
+ * Compiler abstraction
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  BrsHW configuration
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  GLOBAL VARIABLES
+ *********************************************************************************************************************/
+/*
+ * Description: These constants are used to propagate the Versions over module boundaries.
+ *              The version numbers are BCD coded. E.g. a sub version of 23 is coded with 0x23, 
+ *              a bug fix version of 9 is coded 0x09.
+ */
+extern uint8 const kBrsHwMainVersion;
+extern uint8 const kBrsHwSubVersion;
+extern uint8 const kBrsHwBugfixVersion;
+
+/**********************************************************************************************************************
+ *  GLOBAL FUNCTION PROTOTYPES
+ *********************************************************************************************************************/
+/** @cond INTERNAL */
+#if defined (BRS_ENABLE_WATCHDOG)
+/*****************************************************************************/
+/* @brief      This function must be used to initialize the Watchdog.
+ * @pre        -
+ * @param[in]  -
+ * @param[out] -
+ * @return     -
+ * @context    Function is called from BrsMainInit() at power on initialization
+ *****************************************************************************/
+void BrsHwWatchdogInitPowerOn(void);
+#endif /*BRS_ENABLE_WATCHDOG*/
+
+#if defined (BRS_ENABLE_PLLCLOCKS)
+/*****************************************************************************/
+/* @brief      This function must be used to initialize the PLL.
+ * @pre        -
+ * @param[in]  -
+ * @param[out] -
+ * @return     -
+ * @context    Function is called from BrsMainInit() at power on initialization
+ *****************************************************************************/
+void BrsHwPllInitPowerOn(void);
+#endif /*BRS_ENABLE_PLLCLOCKS*/
+
+/* BrsHwDisableInterruptAtPowerOn() is part of ArmCommon */
+
+/* BrsHwSoftwareResetECU() is part of ArmCommon */
+
+/*****************************************************************************/
+/* @brief      Restart ECU (issue a software reset or jump to startup code)
+ * @pre        -
+ * @param[in]  -
+ * @param[out] -
+ * @return     -
+ * @context    Function is called from e.g. ECU state handling
+ *****************************************************************************/
+void BrsHwSoftwareResetECU(void);
+
+
+/* This code is only needed for the first instance/executable in the system */
+#define BRS_START_SEC_STARTUP_CODE
+#include "Brs_MemMap.h"
+/*****************************************************************************/
+/* @brief      Get reset reason
+ * @pre        -
+ * @param[in]  -
+ * @param[out] -
+ * @return     Reset reason
+ * @context    Function is called from BrsMainStartup to determine if reset
+ *             was triggered through software call (BrsHwSoftwareResetECU()).
+ *             The result is stored by BrsMainStartup in the global variable
+ *             brsMain_ResetReason. It should only be called once, during
+ *             startup. The old API name BrsHwGetResetReason() is remapped
+ *             to BrsMainGetResetReason.
+ *****************************************************************************/
+brsMain_ResetReasonType BrsHwGetResetReasonStartup(void);
+#define BRS_STOP_SEC_STARTUP_CODE
+#include "Brs_MemMap.h"
+
+/* Wrapper from old BrsHwGetResetReason() function to new
+ * BrsMainGetResetReason(). This is to prevent multiple selection of reset
+ * reason registers, as this is not supported on all platforms.
+ */
+#define BrsHwGetResetReason() BrsMainGetResetReason()
+
+
+/* BrsHwTime100NOP() is part of ArmCommon */
+
+/*****************************************************************************/
+/* @brief      This API is used to read the core ID of the actual running core
+ * @pre        -
+ * @param[in]  -
+ * @param[out] -
+ * @return     Core ID of the actual running core
+ * @context    Function is e.g. called from main@BrsMain, to only call HW-init
+ *             code once, on the boot core.
+ *             In MultiCore setups, additional BRSHW_INIT_CORE_ID must be
+ *             declared inside BrsHw.h, to configure the proper core ID value
+ *             of that boot core.
+ *****************************************************************************/
+uint32 BrsHw_GetCore(void);
+
+/* BrsHw_EnableInterrupt() is part of ArmCommon */
+
+/* BrsHw_DisableInterrupt() is part of ArmCommon */
+
+/* BrsHw_TriggerSoftwareInterrupt() is part of ArmCommon */
+
+#endif /*_BRSHW_H_*/
+/** @endcond */

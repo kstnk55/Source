@@ -1,0 +1,14 @@
+
+APP_SOURCE_LST        += ..\Project\Appl\Source\Crypto_30_Hwa_Hw.c
+
+# Standard Fee will not be used
+IF_ASRIFFEE_USED                                                 = 0
+IF_ASRIFFEESMALLSECTOR_USED                                      = 1
+IF_FEE_FLEXNOR_USED                                              = 0
+
+# Build the 3rd Party HSMPerfLib if available
+#-include Makefile.project.part.defines.vHsm.PerfLib
+
+# Add comment to ignore the 3rd Party HSMPerfLib stubs if the HSMPerfLib is available
+#ADDITIONAL_INCLUDES += ..\Project\Appl\HSMPerfLib_Stubs
+
