@@ -12,4 +12,4 @@ DualBank_Manager.asm
 -> vHsm.c
 -> vHsm_Callout_Stubs.c
 
-
+Current source code is for 4BF. We must porting to 4DN
