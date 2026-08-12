@@ -1,7 +1,7 @@
 Purpose:
 IPL baseline source code analysis.
 Execution chain:
-CM0:
+CM0 code in vHSM
 DualBank_Manager.asm
 -> ARMStartup_CortexM.c
 -> BrsMainStartup.c
