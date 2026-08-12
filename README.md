@@ -1,7 +1,9 @@
 Purpose:
 IPL baseline source code analysis.
 Execution chain:
-CM0 code in vHSM
+IPL CM0 code in vHSM folder
+IPL CM7 code in CM7 folder
+
 DualBank_Manager.asm
 -> ARMStartup_CortexM.c
 -> BrsMainStartup.c
@@ -9,8 +11,5 @@ DualBank_Manager.asm
 -> SystemInit
 -> vHsm.c
 -> vHsm_Callout_Stubs.c
-Analysis goals:
-- Requirement mapping
-- Impact analysis
-- Porting code from Traveo 4BF to Traveo 4DN
+
 
