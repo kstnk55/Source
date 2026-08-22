@@ -125,23 +125,19 @@
 #define ARM_SYS_REGISTER_REGION_ADDR   (0xE0000000ul)       /* ARM System Registers Region Start Address */
  
 /* Address define - CM7_0 */
-#define SRAM_CM70_NO_ACCESS_1_ADDR        (0x28000000ul)       /* SRAM: CM7_0 Not Access Area 1 Start Address */
-#define SRAM_CM70_NO_ACCESS_2_ADDR        (0x28010000ul)       /* SRAM: CM7_0 Not Access Area 2 Start Address */
-#define SRAM_CM70_CA_ENABLE_1_ADDR        (0x28020000ul)       /* SRAM: CM7_0 Cache Enable Area 1 Start Address */
-#define SRAM_CM70_CA_ENABLE_2_ADDR        (0x28080000ul)       /* SRAM: CM7_0 Cache Enable Area 2 Start Address */
-#define SRAM_CM70_CA_ENABLE_3_ADDR        (0x280A0000ul)       /* SRAM: CM7_0 Cache Enable Area 3 Start Address */
+#define SRAM_CM70_NO_ACCESS_1_ADDR        (0x28000000ul)       /* SRAM: CM7_0 Not Access Area (System Reserve + M0+ Retention, 64KB) */
+#define SRAM_CM70_CA_ENABLE_1_ADDR        (0x28020000ul)       /* SRAM: CM7_0 Cache Enable Area 1 Start Address (MICROSAR BSW Cached) */
+#define SRAM_CM70_CA_ENABLE_2_ADDR        (0x28040000ul)       /* SRAM: CM7_0 Cache Enable Area 2 Start Address (Meter Cached) */
  
 /* Address define - CM7_1 */
 #define CODE_FLASH_A_CM71_ACCESS_1_ADDR   (0x10080000ul)       /* CodeFlash: CM7_1 Access Allow Area 1 Start Address */
 #define CODE_FLASH_A_CM71_ACCESS_2_ADDR   (0x10100000ul)       /* CodeFlash: CM7_1 Access Allow Area 2 Start Address */
-#define CODE_FLASH_A_CM71_ACCESS_3_ADDR   (0x10300000ul)       /* CodeFlash: CM7_1 Access Allow Area 3 Start Address */
-#define WORK_FLASH_CM71_ACCESS_ADDR       (0x1403FF80ul)       /* WorkFlash: CM7_1 Access Allow Area Start Address */
-#define SRAM_CM71_ACCESS_1_ADDR           (0x28008000ul)       /* SRAM: CM7_1 Access Allow Area 1 Start Address */
-#define SRAM_CM71_ACCESS_2_ADDR           (0x28013FE0ul)       /* SRAM: CM7_1 Access Allow Area 2 Start Address */
-#define SRAM_CM71_ACCESS_3_ADDR           (0x28018000ul)       /* SRAM: CM7_1 Access Allow Area 3 Start Address */
-#define SRAM_CM71_ACCESS_4_ADDR           (0x28038000ul)       /* SRAM: CM7_1 Access Allow Area 4 Start Address */
-#define SRAM_CM71_ACCESS_5_ADDR           (0x28040000ul)       /* SRAM: CM7_1 Access Allow Area 5 Start Address */
-#define SRAM_CM71_ACCESS_6_ADDR           (0x280C0000ul)       /* SRAM: CM7_1 Access Allow Area 6 Start Address */
+#define CODE_FLASH_A_CM71_ACCESS_3_ADDR   (0x10280000ul)       /* CodeFlash: CM7_1 Access Allow Area 3 Start Address (App Graphic) */
+#define SRAM_CM71_ACCESS_1_ADDR           (0x28010000ul)       /* SRAM: CM7_1 Access Allow Area 1 Start Address (BootMgr Retention 2KB) */
+#define SRAM_CM71_ACCESS_2_ADDR           (0x28018000ul)       /* SRAM: CM7_1 Access Allow Area 2 Start Address (M0+/M7 Shared Mem 16KB) */
+#define SRAM_CM71_ACCESS_3_ADDR           (0x2801C000ul)       /* SRAM: CM7_1 Access Allow Area 3 Start Address (Graphic Retention 4KB) */
+#define SRAM_CM71_ACCESS_4_ADDR           (0x28060000ul)       /* SRAM: CM7_1 Access Allow Area 4 Start Address (BSW Satelite sub1 + RTE sub2-7, 128KB) */
+#define SRAM_CM71_ACCESS_5_ADDR           (0x28080000ul)       /* SRAM: CM7_1 Access Allow Area 5 Start Address (Graphic SRAM) */
  
 #define MPU_SUB_REGION_ALL_EN          (0x00ul)
 #define MPU_SUB_REGION_0_DIS           (0x01ul)
@@ -236,20 +232,17 @@ extern volatile brsMain_ResetReasonType brsMain_ResetReason;
 static const cy_stc_mpu_region_cfg_t C_MpuConfig70[] = {
         /* addr                                 size                 permission                      attribute                       execute                     srd                                                                       enable       */
         { BACKGROUND_REGION_ADDR,               CY_MPU_SIZE_4GB,     CY_MPU_ACCESS_P_NO_ACCESS,      CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   CM7_SELF_ITCM_REGION_ADDR,          CY_MPU_SIZE_16KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+        {   CM7_SELF_ITCM_REGION_ADDR,          CY_MPU_SIZE_64KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
 /*�{*///{   CODE_FLASH_A_REGION_ADDR,           CY_MPU_SIZE_4MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      (MPU_SUB_REGION_0_DIS | MPU_SUB_REGION_6_DIS | MPU_SUB_REGION_7_DIS),     CY_MPU_ENABLE },
 /*��*/  {   CODE_FLASH_A_REGION_ADDR,           CY_MPU_SIZE_4MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      (MPU_SUB_REGION_0_DIS),                                                   CY_MPU_ENABLE },
         {   CODE_FLASH_B_REGION_ADDR,           CY_MPU_SIZE_4MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   WORK_FLASH_REGION_ADDR,             CY_MPU_SIZE_256KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_6_DIS),                                                   CY_MPU_ENABLE },
+        {   WORK_FLASH_REGION_ADDR,             CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_6_DIS),                                                   CY_MPU_ENABLE },
         {   CM7_SELF_DTCM_REGION_ADDR,          CY_MPU_SIZE_16KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*�{*///{   SRAM_REGION_ADDR,                   CY_MPU_SIZE_1MB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_6_DIS | MPU_SUB_REGION_7_DIS),                            CY_MPU_ENABLE },
+/*�{*///{   SRAM_REGION_ADDR,                   CY_MPU_SIZE_1MB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_4_DIS | MPU_SUB_REGION_5_DIS | MPU_SUB_REGION_6_DIS | MPU_SUB_REGION_7_DIS),    CY_MPU_ENABLE },
 /*��*/  {   SRAM_REGION_ADDR,                   CY_MPU_SIZE_1MB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {     SRAM_CM70_NO_ACCESS_1_ADDR,       CY_MPU_SIZE_32KB,    CY_MPU_ACCESS_P_NO_ACCESS,      CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*�{*///{     SRAM_CM70_NO_ACCESS_2_ADDR,       CY_MPU_SIZE_64KB,    CY_MPU_ACCESS_P_NO_ACCESS,      CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_0_DIS | MPU_SUB_REGION_1_DIS),                            CY_MPU_ENABLE },
-/*��*/  {     SRAM_CM70_NO_ACCESS_2_ADDR,       CY_MPU_SIZE_64KB,    CY_MPU_ACCESS_P_NO_ACCESS,      CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_0_DIS | MPU_SUB_REGION_1_DIS | MPU_SUB_REGION_4_DIS | MPU_SUB_REGION_5_DIS | MPU_SUB_REGION_6_DIS | MPU_SUB_REGION_7_DIS),   CY_MPU_ENABLE },
+        {     SRAM_CM70_NO_ACCESS_1_ADDR,       CY_MPU_SIZE_64KB,    CY_MPU_ACCESS_P_NO_ACCESS,      CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {     SRAM_CM70_CA_ENABLE_1_ADDR,       CY_MPU_SIZE_32KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {     SRAM_CM70_CA_ENABLE_2_ADDR,       CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {     SRAM_CM70_CA_ENABLE_3_ADDR,       CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_7_DIS),                                                   CY_MPU_ENABLE },
         {   PERI_REGISTER_REGION_ADDR,          CY_MPU_SIZE_64MB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_SHR_DEV,            CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {   SMIF0_XIP_REGION_ADDR,              CY_MPU_SIZE_128MB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_MEM_NC,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {   ARM_SYS_REGISTER_REGION_ADDR,       CY_MPU_SIZE_512MB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
@@ -262,18 +255,15 @@ static const cy_stc_mpu_region_cfg_t C_MpuConfig71[] = {
         {   CODE_FLASH_A_CM71_ACCESS_1_ADDR,    CY_MPU_SIZE_512KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      (MPU_SUB_REGION_0_DIS),                                                   CY_MPU_ENABLE },
 /*�{*///{   CODE_FLASH_A_CM71_ACCESS_2_ADDR,    CY_MPU_SIZE_256KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
 /*��*/  {   CODE_FLASH_A_CM71_ACCESS_2_ADDR,    CY_MPU_SIZE_1MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*�{*///{   CODE_FLASH_A_CM71_ACCESS_3_ADDR,    CY_MPU_SIZE_1MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*��*/  {   0x10200000ul,                       CY_MPU_SIZE_2MB,     CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   WORK_FLASH_CM71_ACCESS_ADDR,        CY_MPU_SIZE_128B,    CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+/*�{*///{   CODE_FLASH_A_CM71_ACCESS_3_ADDR,    CY_MPU_SIZE_512KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      (MPU_SUB_REGION_0_DIS | MPU_SUB_REGION_1_DIS | MPU_SUB_REGION_2_DIS),     CY_MPU_ENABLE },
+/*��*/  {   CODE_FLASH_A_CM71_ACCESS_3_ADDR,    CY_MPU_SIZE_512KB,   CY_MPU_ACCESS_P_RO,             CY_MPU_ATTR_NORM_MEM_WT,        CY_MPU_INST_ACCESS_EN,      MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
 /*�{*///{   SRAM_CM71_ACCESS_1_ADDR,            CY_MPU_SIZE_2KB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*��*/  {   SRAM_CM71_ACCESS_1_ADDR,            CY_MPU_SIZE_32KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   SRAM_CM71_ACCESS_2_ADDR,            CY_MPU_SIZE_32B,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   SRAM_CM71_ACCESS_3_ADDR,            CY_MPU_SIZE_32KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*�{*///{   SRAM_CM71_ACCESS_4_ADDR,            CY_MPU_SIZE_32KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*��*/  {   0x28020000ul,                       CY_MPU_SIZE_128KB,    CY_MPU_ACCESS_P_FULL_ACCESS,   CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-        {   SRAM_CM71_ACCESS_5_ADDR,            CY_MPU_SIZE_256KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*�{*///{   SRAM_CM71_ACCESS_6_ADDR,            CY_MPU_SIZE_256KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
-/*��*/  {   0x28080000ul,                       CY_MPU_SIZE_512KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+/*��*/  {   SRAM_CM71_ACCESS_1_ADDR,            CY_MPU_SIZE_2KB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+        {   SRAM_CM71_ACCESS_2_ADDR,            CY_MPU_SIZE_16KB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+        {   SRAM_CM71_ACCESS_3_ADDR,            CY_MPU_SIZE_4KB,     CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
+/*�{*///{   SRAM_CM71_ACCESS_4_ADDR,            CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_0_DIS),                                                   CY_MPU_ENABLE },
+/*��*/  {   SRAM_CM71_ACCESS_4_ADDR,            CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     (MPU_SUB_REGION_0_DIS),                                                   CY_MPU_ENABLE },
+        {   SRAM_CM71_ACCESS_5_ADDR,            CY_MPU_SIZE_128KB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_NORM_SHR_MEM_NC,    CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {   PERI_REGISTER_REGION_ADDR,          CY_MPU_SIZE_64MB,    CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_SHR_DEV,            CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
         {   ARM_SYS_REGISTER_REGION_ADDR,       CY_MPU_SIZE_512MB,   CY_MPU_ACCESS_P_FULL_ACCESS,    CY_MPU_ATTR_STR_ORD_DEV,        CY_MPU_INST_ACCESS_DIS,     MPU_SUB_REGION_ALL_EN,                                                    CY_MPU_ENABLE },
  
@@ -515,8 +505,7 @@ TASK(Default_Init_Task)
     (void)Schedule();
   }*/
 #endif /*BRS_ENABLE_OS_MULTICORESUPPORT*/
- 
-#if defined (BRS_ENABLE_TESTSUITE_SUPPORT)
+ #if defined (BRS_ENABLE_TESTSUITE_SUPPORT)
   BrsTestsuiteInit();
 #endif
  
@@ -641,9 +630,9 @@ TASK(Default_Init_Task_Core1)
   }
  
   EcuM_StartupTwo();
-/* IVI */
-  wvdFLSIF_Init();
-/* IVI */
+// /* IVI */
+//  wvdFLSIF_Init();
+// /* IVI */
  
   Rte_Start();
 /************* add end  *************/
@@ -950,7 +939,7 @@ void BrsMainCyclic1ms(void)
  * @context    The task is started once by the OS and activated by
  *             the OS event EvCyclicAlarm_1ms
  *****************************************************************************/
- TASK(BrsMainTask)
+TASK(BrsMainTask)
 {
   EventMaskType ev;
  
