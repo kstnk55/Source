@@ -86,11 +86,11 @@
  
 /**
  * @def SRAM_SECURE_DTC
- * @value 0x28013FE4U
+ * @value 0x2801BFF0U
  * @resolution -
  * @brief Memory address for the secure DTC(Diagnostic Trouble Code) region in SRAM
  */
-#define SRAM_SECURE_DTC                       (0x28013FE4U)
+#define SRAM_SECURE_DTC                       (0x2801BFF0U)
  
 /**
  * @def BACK_GROUND_REGION
@@ -127,17 +127,25 @@
  * @def WORK_FLASH_CM7_NVM_AREA
  * @value 0x14000000u
  * @resolution -
- * @brief Start Address of CM7 NVM area (Meter, IVI) in Work Flash (192KB + 64KB)
+ * @brief Start Address of CM7 NVM area (Meter, Graphic) in Work Flash (96KB + 32KB)
  */
 # define WORK_FLASH_CM7_NVM_AREA             (0x14000000u)
  
 /**
  * @def WORK_FLASH_CM0_NVM_AREA
- * @value 0x14030000u
+ * @value 0x14018000u
  * @resolution -
- * @brief Start Address of CM0 NVM area (Security) in Work Flash
+ * @brief Start Address of CM0 NVM area (Security) in Work Flash - Part 1 (first 16KB)
  */
-# define WORK_FLASH_CM0_NVM_AREA             (0x14030000u)
+# define WORK_FLASH_CM0_NVM_AREA             (0x14018000u)
+ 
+/**
+ * @def WORK_FLASH_CM0_NVM_AREA_P2
+ * @value 0x1401C000u
+ * @resolution -
+ * @brief Start Address of CM0 NVM area Part 2 in Work Flash (last 16KB; sub7 excluded to allow CM7 access to Bank Info at 0x1401FF00)
+ */
+# define WORK_FLASH_CM0_NVM_AREA_P2          (0x1401C000u)
  
 /**
  * @def FLASH_SUPER_BOOT_DUALBANK
@@ -159,33 +167,41 @@
  * @def SRAM_CMOP_RETENTION
  * @value 0x28000800u
  * @resolution -
- * @brief Start Address of CM0+ Retention area in SRAM
+ * @brief Start Address of CM0+ Retention area in SRAM (62KB, ends at 0x2800FFFF)
  */
 # define SRAM_CMOP_RETENTION                 (0x28000800u)
  
 /**
- * @def SRAM_M0_RETENTION_2
- * @value 0x28014000u
+ * @def SRAM_RTE_SHARED
+ * @value 0x28068000u
  * @resolution -
- * @brief Start Address of CM0+ Retention 2 area in SRAM
+ * @brief Start Address of RTE, Shared code, MCAL, SDL memory (94KB, accessible by M0+/CM7-0/CM7-1)
  */
-# define SRAM_M0_RETENTION_2                 (0x28014000u)
+# define SRAM_RTE_SHARED                     (0x28068000u)
  
 /**
  * @def SRAM_ANALYSIS_LOG
- * @value 0x28017800u
+ * @value 0x2807F800u
  * @resolution -
  * @brief Start Address of Analysis Log area in SRAM
  */
-# define SRAM_ANALYSIS_LOG                   (0x28017800u)
+# define SRAM_ANALYSIS_LOG                   (0x2807F800u)
  
 /**
  * @def SRAM_METER_CACHED
- * @value 0x28080000u
+ * @value 0x28040000u
  * @resolution -
  * @brief Start Address of Meter Cached data in SRAM
  */
-# define SRAM_METER_CACHED                   (0x28080000u)
+# define SRAM_METER_CACHED                   (0x28040000u)
+ 
+/**
+ * @def SRAM_GRAPHIC_CACHED
+ * @value 0x28080000u
+ * @resolution -
+ * @brief Start Address of Graphic Cached data in SRAM
+ */
+# define SRAM_GRAPHIC_CACHED                 (0x28080000u)
  
 /**
  * @def PERIPHERAL_REGISTER
@@ -380,11 +396,11 @@ COREISO_LOCAL CONST(cy_stc_mpu_region_cfg_t, AUTOMATIC) CoreIso_MPUConfig[CORE_I
   /* 3. Work Flash Region */
   {
     WORK_FLASH_CM7_NVM_AREA,
-    CY_MPU_SIZE_256KB,
+    CY_MPU_SIZE_128KB,
     CY_MPU_ACCESS_P_PRIV_RO,
     CY_MPU_ATTR_NORM_MEM_WT,
     CY_MPU_INST_ACCESS_EN,
-    0x3Fu, /* 0011 1111 */
+    0x3Fu, /* 0011 1111 - disable sub0-sub5 (M7 NvM 96KB), expose sub6-sub7 (M0 NvM at 0x14018000) */
     CY_MPU_ENABLE
   },
   /* 4. Flash Supervisory */
@@ -400,11 +416,11 @@ COREISO_LOCAL CONST(cy_stc_mpu_region_cfg_t, AUTOMATIC) CoreIso_MPUConfig[CORE_I
   /* 5. System RAM */
   {
     SRAM_SYSTEM_RESERVE,
-    CY_MPU_SIZE_128KB,
+    CY_MPU_SIZE_1MB,
     CY_MPU_ACCESS_P_PRIV_RW,
     CY_MPU_ATTR_NORM_SHR_MEM_NC,
     CY_MPU_INST_ACCESS_DIS,
-    0xCCu, /* 1100 1100 */
+    0xF6u, /* 1111 0110 - disable sub1(MICROSAR BSW),sub2(Meter Cached),sub4(Graphic),sub5-7 */
     CY_MPU_ENABLE
   },
   /* 6. Peripheral Register */
@@ -449,21 +465,32 @@ COREISO_LOCAL CONST(cy_stc_mpu_region_cfg_t, AUTOMATIC) CoreIso_MPUConfig[CORE_I
  */
 COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0MasterStructCfg[] = {
   /* Index */
-  /* 0. System RAM : SRAM_METER_CACHED + SRAM_METER_NO_CACHED + IVI*/
+  /* 0. System RAM : SRAM_METER_CACHED + SRAM_METER_NO_CACHED + Graphic */
   {
     (uint32_t *) SRAM_SYSTEM_RESERVE,
     CY_PROT_SIZE_1MB,
-    0x01u,
+    0x09u, /* disable sub0(CM0+ areas) and sub3(RTE Shared 0x28060000) from blocking rule */
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_RW,
     (bool)COREISO_SMPU_SECURE,
     (bool)0u,
     0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
   },
-  /* 1. System RAM : SRAM_SYSTEM_RESERVE + SRAM_CMOP_RETENTION */
+  /* 1. System RAM : SRAM_SYSTEM_RESERVE + SRAM_CMOP_RETENTION (System Reserve 2KB + M0+ Retention 62KB, 0x28000000-0x2800FFFF) */
   {
     (uint32_t *) (SRAM_SYSTEM_RESERVE),
-    CY_PROT_SIZE_32KB,
+    CY_PROT_SIZE_64KB,
+    0x00u, /* all 8 sub-regions are System Reserve + M0+ Retention ? no exclusion needed */
+    CY_PROT_PERM_DISABLED,
+    CY_PROT_PERM_RW,
+    (bool)COREISO_SMPU_SECURE,
+    (bool)0u,
+    0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
+  },
+  /* 2. Work Flash Region : M0 NvM Area(Security) - Part 1 (first 16KB, 0x14018000-0x1401BFFF) */
+  {
+    (uint32_t *) WORK_FLASH_CM0_NVM_AREA,
+    CY_PROT_SIZE_16KB,
     0x00u,
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_RW,
@@ -471,22 +498,11 @@ COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0MasterStruc
     (bool)0u,
     0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
   },
-  /* 2. System RAM : SRAM_M0_RETENTION_2 */
+  /* 3. Work Flash Region : M0 NvM Area(Security) - Part 2 (0x1401C000; sub7=0x1401F800 excluded for Bank Info CM7 access) */
   {
-    (uint32_t *) (SRAM_M0_RETENTION_2),
+    (uint32_t *) WORK_FLASH_CM0_NVM_AREA_P2,
     CY_PROT_SIZE_16KB,
-    0x80u,
-    CY_PROT_PERM_DISABLED,
-    CY_PROT_PERM_RW,
-    (bool)COREISO_SMPU_SECURE,
-    (bool)0u,
-    0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
-  },  
-  /* 3. Work Flash Region : M0 NvM Area(Security)*/
-  {
-    (uint32_t *) WORK_FLASH_CM0_NVM_AREA,
-    CY_PROT_SIZE_32KB,
-    0u,
+    0x80u, /* disable sub7: Not used + Direct Nv Area(Bank Info. 0x1401FF00) accessible by CM7 */
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_RW,
     (bool)COREISO_SMPU_SECURE,
@@ -542,21 +558,32 @@ COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0MasterStruc
  */
 COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0SlaveStructCfg[] = {
   /* Index */
-  /* 0. System RAM : SRAM_METER_CACHED + SRAM_METER_NO_CACHED + IVI*/
+  /* 0. System RAM : SRAM_METER_CACHED + SRAM_METER_NO_CACHED + Graphic */
   {
     (uint32_t *) SRAM_SYSTEM_RESERVE,
     CY_PROT_SIZE_1MB,
-    0x01u,
+    0x09u, /* disable sub0(CM0+ areas 0x28000000) and sub3(RTE Shared 0x28060000) from blocking rule */
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_DISABLED,
     (bool)COREISO_SMPU_SECURE,
     (bool)1u,
     0x0010u /*Alow [bit4] PC5: CM0*/
   },
-  /* 1. System RAM : SRAM_SYSTEM_RESERVE + SRAM_CMOP_RETENTION */
+  /* 1. System RAM : SRAM_SYSTEM_RESERVE + SRAM_CMOP_RETENTION (System Reserve 2KB + M0+ Retention 62KB, 0x28000000-0x2800FFFF) */
   {
     (uint32_t *) (SRAM_SYSTEM_RESERVE),
-    CY_PROT_SIZE_32KB,
+    CY_PROT_SIZE_64KB,
+    0x00u, /* all 8 sub-regions are System Reserve + M0+ Retention ? no exclusion needed */
+    CY_PROT_PERM_DISABLED,
+    CY_PROT_PERM_RW,
+    (bool)COREISO_SMPU_SECURE,
+    (bool)0u,
+    0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
+  },
+  /* 2. Work Flash Region : M0 NvM Area(Security) - Part 1 (first 16KB, 0x14018000-0x1401BFFF) */
+  {
+    (uint32_t *) WORK_FLASH_CM0_NVM_AREA,
+    CY_PROT_SIZE_16KB,
     0x00u,
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_RW,
@@ -564,22 +591,11 @@ COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0SlaveStruct
     (bool)0u,
     0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
   },
-  /* 2. System RAM : SRAM_M0_RETENTION_2 */
+  /* 3. Work Flash Region : M0 NvM Area(Security) - Part 2 (0x1401C000; sub7=0x1401F800 excluded for Bank Info CM7 access) */
   {
-    (uint32_t *) (SRAM_M0_RETENTION_2),
+    (uint32_t *) WORK_FLASH_CM0_NVM_AREA_P2,
     CY_PROT_SIZE_16KB,
-    0x80u,
-    CY_PROT_PERM_DISABLED,
-    CY_PROT_PERM_RW,
-    (bool)COREISO_SMPU_SECURE,
-    (bool)0u,
-    0x0017u /*Alow [bit0~2] PC1~3: HW control, [bit4] PC5: CM0*/
-  },
-  /*3. Work Flash Region : M0 NvM Area(Security)*/
-  {
-    (uint32_t *) WORK_FLASH_CM0_NVM_AREA,
-    CY_PROT_SIZE_32KB,
-    0u,
+    0x80u, /* disable sub7: Not used + Direct Nv Area(Bank Info. 0x1401FF00) accessible by CM7 */
     CY_PROT_PERM_DISABLED,
     CY_PROT_PERM_RW,
     (bool)COREISO_SMPU_SECURE,
@@ -620,7 +636,7 @@ COREISO_LOCAL CONST(CoreIso_SMPUAttribute, AUTOMATIC) CoreIso_SmpuCm0SlaveStruct
     0x007Fu /*Alow [bit0~2] PC1~3: HW control, [bit4~7]PC5:CM0 PC6,7: CM7_0,CM7_1*/
   }
 };
- 
+  
 /**
  * @type CoreIso_SMPUProtConfigType[]
  * @var CoreIso_SmpuCm0Cfg
@@ -701,15 +717,15 @@ COREISO_LOCAL CONST(CoreIso_SMPUConfigType, AUTOMATIC) CoreIso_SmpuCfg[] = {
  */
 COREISO_LOCAL CONST(uint16, AUTOMATIC) CoreIso_PPUFxROMConfig[NR_OF_PPU_IGNORED] =
 {
-  25u,  /* PERI_MS_PPU_FX_CRYPTO_BOOT */
-  32u,  /* PERI_MS_PPU_FX_CPUSS_BOOT */
-  75u,  /* PERI_MS_PPU_FX_FLASHC_FlashMgmt */
-  311u, /* PERI_MS_PPU_FX_EFUSE_CTL */
-  312u, /* PERI_MS_PPU_FX_EFUSE_DATA */
-  80u,  /* PERI_MS_PPU_FX_SRSS_SECURE */
-  66u,  /* PERI_MS_PPU_FX_FLASHC_DFT */
-  313u, /* PERI_MS_PPU_FX_BIST */
-  13u,  /* PERI_MS_PPU_FX_PERI_GR2_BOOT */
+  27u,  /* PERI_MS_PPU_FX_CRYPTO_BOOT */
+  34u,  /* PERI_MS_PPU_FX_CPUSS_BOOT */
+  77u,  /* PERI_MS_PPU_FX_FLASHC_FlashMgmt */
+  272u, /* PERI_MS_PPU_FX_EFUSE_CTL */
+  273u, /* PERI_MS_PPU_FX_EFUSE_DATA */
+  82u,  /* PERI_MS_PPU_FX_SRSS_SECURE */
+  69u,  /* PERI_MS_PPU_FX_FLASHC_DFT */
+  274u, /* PERI_MS_PPU_FX_DFT */
+  14u,  /* PERI_MS_PPU_FX_PERI_GR2_BOOT */
 };
 /** @cond INTERNAL */
 # define COREISO_STOP_SEC_CONST
@@ -781,7 +797,6 @@ COREISO_LOCAL FUNC(void, AUTOMATIC) CoreIso_SetDtcError(uint8 DtcErrCode, uint32
  
  SecureBootDtc_Ptr = NULL_PTR;
 }
- 
  
 /************************************************************************************************/
 /**
@@ -1038,7 +1053,8 @@ COREISO_LOCAL FUNC(Std_ReturnType, AUTOMATIC) CoreIso_IsPPUFxAvailable(CONST(uin
  */
 /* FPT*/
 /* date 2022 */
-/************************************************************************************************/
+ 
+ /************************************************************************************************/
 COREISO_LOCAL FUNC(void, AUTOMATIC) CoreIso_PpuClrSlavePermissionAll(void)
 {
   uint8                       pcIndex;
@@ -1225,7 +1241,6 @@ COREISO_LOCAL FUNC(void, AUTOMATIC) CoreIso_PpuClrMasterPermissionAll(void)
     }
   }
 }
-
  
 /************************************************************************************************/
 /**
@@ -1623,7 +1638,8 @@ COREISO_LOCAL FUNC(cy_en_prot_status_t, AUTOMATIC)  CoreIso_Wrapper_SetActivePC(
 /************************************************************************************************/
 COREISO_LOCAL FUNC(void, AUTOMATIC) CoreIso_SmpuBusMasterInit(const CoreIso_SMPUProtConfigType *busMasterCfgPtr)
 {
-  cy_en_prot_status_t retVal = CY_PROT_SUCCESS;
+ 
+   cy_en_prot_status_t retVal = CY_PROT_SUCCESS;
   uint8 structCfgIdx;
   uint8 numberAttr;
   uint8 smpuStructIdxConvert;
@@ -2174,5 +2190,6 @@ FUNC(void, AUTOMATIC) CoreIso_Init(void)
 /**********************************************************************************************************************
  *  END OF FILE: CoreIso.c
  *********************************************************************************************************************/
+ 
  
  
